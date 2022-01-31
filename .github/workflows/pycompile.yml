@@ -15,8 +15,7 @@ jobs:
         python: [ 2.7, 3.6, 3.7, 3.8, 3.9, 3.10 ]
     steps:
       - uses: actions/checkout@v2
-      - name: Setup Python ${{ matrix.python }}
-        uses: actions/setup-python@v2.3.1
+      - uses: actions/setup-python@v2.3.1
         with:
           python-version: ${{ matrix.python }}
-      - name: python -m py_compile srf
+      - run: python -m py_compile srf
