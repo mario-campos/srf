@@ -49,18 +49,18 @@ def main():
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers()
 
-    parser_grep = subparsers.add_parser('grep', help='Filter SARIF results based on file paths using glob-style pattern-matching.')
+    parser_grep = subparsers.add_parser('grep', help='filter the results based on matching file paths.')
     parser_grep.add_argument('-v', dest='invert', action='store_true', help='negate match; invert results.')
     parser_grep.add_argument('pattern')
     parser_grep.add_argument('input', metavar='sarif')
     parser_grep.set_defaults(func=sarif_grep)
 
-    parser_head = subparsers.add_parser('head', help='Reduce the SARIF file to the first N [25] results.')
-    parser_head.add_argument('-n', default=25, type=int, required=False)
+    parser_head = subparsers.add_parser('head', help='limit the SARIF file to the first N results (default: 25).')
+    parser_head.add_argument('-n', default=25, type=int, required=False, help='number of results to keep.')
     parser_head.add_argument('input', metavar='sarif')
     parser_head.set_defaults(func=sarif_head)
 
-    parser_stat = subparsers.add_parser('stat', help='Get information about SARIF file.')
+    parser_stat = subparsers.add_parser('stat', help='output information about the SARIF file.')
     parser_stat.add_argument('input', metavar='sarif')
     parser_stat.set_defaults(func=sarif_stat)
 
