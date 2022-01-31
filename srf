@@ -2,14 +2,21 @@
 
 import argparse
 import fnmatch
+import gzip
 import json
 import os.path
 
 def sarif_stat(args):
     with open(args.input) as fh:
-        sarif_file = json.loads(fh.read())
+        sarif_data = fh.read()
+        sarif_file = json.loads(sarif_data)
 
-    print('Size: {}'.format(os.path.getsize(args.input)))
+    # It's often useful to know the file size and "upload size", since GitHub will
+    # block uploads that are "too large."
+    print('Size: {} (gzip: {})'.format(
+        os.path.getsize(args.input),
+        len(gzip.compress(sarif_data.encode('utf-8'))) # requires Python >= 3.2
+    ))
     print('Results: {}'.format(
         len([x for run in sarif_file['runs'] for x in run['results']])
     ))
