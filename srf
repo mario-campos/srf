@@ -3,6 +3,17 @@
 import argparse
 import fnmatch
 import json
+import os.path
+
+def sarif_stat(args):
+    print('Size: {}'.format(os.path.getsize(args.input)))
+
+    with open(args.input) as fh:
+        sarif_file = json.loads(fh.read())
+
+    print('Results: {}'.format(
+        len([x for run in sarif_file['runs'] for x in run['results']])
+    ))
 
 def sarif_head(args):
     with open(args.input) as fh:
@@ -42,6 +53,10 @@ def main():
     parser_head.add_argument('-n', default=25, type=int, required=False)
     parser_head.add_argument('input', metavar='sarif')
     parser_head.set_defaults(func=sarif_head)
+
+    parser_stat = subparsers.add_parser('stat', help='Get information about SARIF file.')
+    parser_stat.add_argument('input', metavar='sarif')
+    parser_stat.set_defaults(func=sarif_stat)
 
     args = parser.parse_args()
     args.func(args)
