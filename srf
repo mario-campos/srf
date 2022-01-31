@@ -5,7 +5,8 @@ import fnmatch
 import json
 
 def sarif_head(args):
-    sarif_file = json.loads(args.input.read())
+    with open(args.input) as fh:
+        sarif_file = json.loads(fh.read())
 
     for run in sarif_file['runs']:
         for result in run['results']:
@@ -14,7 +15,8 @@ def sarif_head(args):
     print(json.dumps(sarif_file))
 
 def sarif_grep(args):
-    sarif_file = json.loads(args.input.read())
+    with open(args.input) as fh:
+        sarif_file = json.loads(fh.read())
 
     for run in sarif_file['runs']:
         for result in run['results'][:]:
@@ -33,12 +35,12 @@ def main():
     parser_grep = subparsers.add_parser('grep', help='Filter SARIF results based on file paths using glob-style pattern-matching.')
     parser_grep.add_argument('-v', dest='invert', action='store_true', help='negate match; invert results.')
     parser_grep.add_argument('pattern')
-    parser_grep.add_argument('input', type=argparse.FileType())
+    parser_grep.add_argument('input', metavar='sarif')
     parser_grep.set_defaults(func=sarif_grep)
 
     parser_head = subparsers.add_parser('head', help='Reduce the SARIF file to the first N [25] results.')
     parser_head.add_argument('-n', default=25, type=int, required=False)
-    parser_head.add_argument('input', type=argparse.FileType())
+    parser_head.add_argument('input', metavar='sarif')
     parser_head.set_defaults(func=sarif_head)
 
     args = parser.parse_args()
