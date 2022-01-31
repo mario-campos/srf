@@ -6,11 +6,10 @@ import json
 import os.path
 
 def sarif_stat(args):
-    print('Size: {}'.format(os.path.getsize(args.input)))
-
     with open(args.input) as fh:
         sarif_file = json.loads(fh.read())
 
+    print('Size: {}'.format(os.path.getsize(args.input)))
     print('Results: {}'.format(
         len([x for run in sarif_file['runs'] for x in run['results']])
     ))
