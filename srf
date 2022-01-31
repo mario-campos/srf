@@ -25,6 +25,7 @@ def sarif_head(args):
     with open(args.input) as fh:
         sarif_file = json.loads(fh.read())
 
+    # FIXME: This does not work if len(runs) > 1.
     for run in sarif_file['runs']:
         for result in run['results']:
             run['results'] = run['results'][:args.n]
