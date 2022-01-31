@@ -1,0 +1,34 @@
+#!/usr/bin/env python
+
+import argparse
+import fnmatch
+import json
+
+def sarif_grep(args):
+    sarif_file = json.loads(args.input.read())
+
+    for run in sarif_file['runs']:
+        for result in run['results'][:]:
+            for location in result['locations']:
+                filepath = location['physicalLocation']['artifactLocation']['uri']
+                if args.invert == fnmatch.fnmatchcase(filepath, args.pattern):
+                    run['results'].remove(result)
+                    break
+
+    print(json.dumps(sarif_file))
+
+def main():
+    parser = argparse.ArgumentParser()
+    subparsers = parser.add_subparsers()
+
+    parser_grep = subparsers.add_parser('grep', help='Filter SARIF results based on file paths using glob-style pattern-matching.')
+    parser_grep.add_argument('-v', dest='invert', action='store_true', help='negate match; invert results.')
+    parser_grep.add_argument('pattern')
+    parser_grep.add_argument('input', type=argparse.FileType())
+    parser_grep.set_defaults(func=sarif_grep)
+
+    args = parser.parse_args()
+    args.func(args)
+
+if __name__ == '__main__':
+    main()
