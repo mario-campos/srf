@@ -11,12 +11,13 @@ def sarif_stat(args):
         sarif_data = fh.read()
         sarif_file = json.loads(sarif_data)
 
-    # It's often useful to know the file size and "upload size", since GitHub will
-    # block uploads that are "too large."
-    print('Size: {} (gzip: {})'.format(
-        os.path.getsize(args.input),
+    print('File Size: {}'.format(os.path.getsize(args.input)))
+
+    # It's often useful to know the "upload size", since GitHub will block uploads that are "too large."
+    print('Upload Size: {}'.format(
         len(gzip.compress(sarif_data.encode('utf-8'))) # requires Python >= 3.2
     ))
+
     print('Results: {}'.format(
         len([x for run in sarif_file['runs'] for x in run['results']])
     ))
