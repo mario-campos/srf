@@ -7,7 +7,7 @@ import json
 import os.path
 
 def sarif_stat(args):
-    def human_size(bytes, units=[' bytes','KB','MB','GB','TB', 'PB', 'EB']):
+    def human_size(bytes, units=['B','KiB','MiB','GiB','TiB', 'PiB', 'EiB']):
         return str(bytes) + units[0] if bytes < 1024 else human_size(bytes>>10, units[1:])
 
     with open(args.input) as fh:
