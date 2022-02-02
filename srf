@@ -7,14 +7,25 @@ import json
 import os.path
 
 def sarif_stat(args):
+    def human_size(bytes, units=[' bytes','KB','MB','GB','TB', 'PB', 'EB']):
+        return str(bytes) + units[0] if bytes < 1024 else human_size(bytes>>10, units[1:])
+
     with open(args.input) as fh:
         sarif_data = fh.read()
         sarif_file = json.loads(sarif_data)
 
-    print('File Size:', os.path.getsize(args.input))
+    filesize = os.path.getsize(args.input)
+    print('File Size: {} ({})'.format(
+        filesize,
+        human_size(filesize),
+    ))
 
     # It's often useful to know the "upload size", since GitHub will block uploads that are "too large."
-    print('Upload Size:', len(gzip.compress(sarif_data.encode('utf-8'))))
+    uploadsize = len(gzip.compress(sarif_data.encode('utf-8')))
+    print('Upload Size: {} ({})'.format(
+        uploadsize,
+        human_size(uploadsize),
+    ))
 
     print('Runs:', len(sarif_file['runs']))
     print('Results:', len([x for run in sarif_file['runs'] for x in run['results']]))
