@@ -16,6 +16,7 @@ def sarif_stat(args):
     # It's often useful to know the "upload size", since GitHub will block uploads that are "too large."
     print('Upload Size:', len(gzip.compress(sarif_data.encode('utf-8'))))
 
+    print('Runs:', len(sarif_file['runs']))
     print('Results:', len([x for run in sarif_file['runs'] for x in run['results']]))
 
 def sarif_head(args):
